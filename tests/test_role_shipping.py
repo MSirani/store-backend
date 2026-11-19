@@ -1,5 +1,6 @@
 """Role isolation, order privacy and independent per-seller shipping tests."""
 import os
+from contextlib import closing
 import sqlite3
 import tempfile
 import unittest
@@ -138,10 +139,9 @@ class RoleAndShippingTests(unittest.TestCase):
     def test_existing_seller_and_order_are_migrated_without_id_loss(self):
         # Stop app to modify DB into previous schema state.
         self.client_cm.__exit__(None,None,None)
-        old_schema = Path(__file__).parents[2] / 'store-backend-with-sellers' / 'database' / 'schema.sql'
         # Build a minimal prior-version DB instead of relying on external files.
         self.db.unlink()
-        with sqlite3.connect(self.db) as conn:
+        with closing(sqlite3.connect(self.db)) as conn, conn:
             conn.executescript('''
             CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT UNIQUE,
               password_hash TEXT, role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer','admin')));

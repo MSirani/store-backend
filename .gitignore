@@ -4,6 +4,8 @@ __pycache__/
 .env
 *.py[cod]
 database/*.db*
+
+# Local databases and editor files
 *.db
 *.db-*
 *.db.bak

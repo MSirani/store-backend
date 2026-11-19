@@ -1,4 +1,5 @@
 import os
+from contextlib import closing
 import sqlite3
 import tempfile
 import unittest
@@ -107,7 +108,7 @@ class SellerTests(unittest.TestCase):
 
     def test_existing_product_schema_migration_keeps_rows(self):
         self.cm.__exit__(None,None,None)
-        with sqlite3.connect(self.path) as conn:
+        with closing(sqlite3.connect(self.path)) as conn, conn:
             conn.execute('INSERT INTO products(name, price_toman, active) VALUES (?,?,1)', ('old',1000))
         init_db()
         with get_connection() as conn:
